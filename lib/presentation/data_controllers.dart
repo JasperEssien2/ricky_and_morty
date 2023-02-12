@@ -1,30 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ricky_and_morty/domain/character_entity.dart';
 
-abstract class DataController<T> extends ChangeNotifier {
-  DataController();
-
-  ControllerException? get error => _error;
-  ControllerException? _error;
-
-  @visibleForTesting
-  ConnectionState get state => _state;
-  ConnectionState _state = ConnectionState.none;
-
-  set state(ConnectionState newState) {
-    if (_state == newState) {
-      return;
-    }
-    _state = newState;
-    notifyListeners();
-  }
-
-  bool get isLoading => _state == ConnectionState.waiting;
-
-  bool get hasError => _state == ConnectionState.done && error != null;
-}
-
-class CharactersDataController extends DataController<List<CharacterEntity>> {
+class CharactersDataController extends ChangeNotifier {
   List<CharacterEntity> _characters = [];
   List<CharacterEntity> get characters => _characters;
 
@@ -71,6 +48,25 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
 
     state = ConnectionState.done;
   }
+
+  ControllerException? get error => _error;
+  ControllerException? _error;
+
+  @visibleForTesting
+  ConnectionState get state => _state;
+  ConnectionState _state = ConnectionState.none;
+
+  set state(ConnectionState newState) {
+    if (_state == newState) {
+      return;
+    }
+    _state = newState;
+    notifyListeners();
+  }
+
+  bool get isLoading => _state == ConnectionState.waiting;
+
+  bool get hasError => _state == ConnectionState.done && error != null;
 }
 
 class ControllerException implements Exception {

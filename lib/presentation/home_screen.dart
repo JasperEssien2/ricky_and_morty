@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemCount: charactersController
                                   .favouriteCharacters.length,
                               itemBuilder: (context, index) =>
-                                  ItemFavouriteCharacter(
+                                  ItemFavouriteCharacterCard(
                                 entity: charactersController
                                     .favouriteCharacters[index],
                               ),

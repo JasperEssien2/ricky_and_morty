@@ -55,8 +55,8 @@ class ItemCharacterCard extends StatelessWidget {
   }
 }
 
-class ItemFavouriteCharacter extends StatelessWidget {
-  const ItemFavouriteCharacter({super.key, required this.entity});
+class ItemFavouriteCharacterCard extends StatelessWidget {
+  const ItemFavouriteCharacterCard({super.key, required this.entity});
 
   final CharacterEntity entity;
 
