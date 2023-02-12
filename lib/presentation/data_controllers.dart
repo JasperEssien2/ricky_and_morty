@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ricky_and_morty/domain/character_entity.dart';
 
 import 'package:flutter/widgets.dart';
+import 'package:ricky_and_morty/domain/domain_export.dart';
 
 abstract class DataController<T> with ChangeNotifier {
   DataController({required T data}) : _data = data;
@@ -32,32 +32,22 @@ abstract class DataController<T> with ChangeNotifier {
 }
 
 class CharactersDataController extends DataController<List<CharacterEntity>> {
-  CharactersDataController({super.data = const []});
+  CharactersDataController({
+    super.data = const [],
+    required this.getCharactersUseCase,
+  });
+
+  final GetCharactersUseCase getCharactersUseCase;
 
   @override
   Future<void> fetch() async {
     state = ConnectionState.waiting;
-    _data = [
-      CharacterEntity(
-        id: 0,
-        name: 'Morty 1',
-        specie: 'Human',
-        image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
-      ),
-      CharacterEntity(
-        id: 1,
-        name: 'Morty 2',
-        specie: 'Human',
-        image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
-      ),
-      CharacterEntity(
-        id: 2,
-        name: 'Morty 3',
-        specie: 'Human',
-        image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
-      ),
-    ];
 
+    try {
+      _data = await getCharactersUseCase();
+    } catch (e) {
+      _error = e.toString();
+    }
     state = ConnectionState.done;
   }
 
@@ -74,34 +64,49 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
 
 class FavouriteCharactersDataController
     extends DataController<List<CharacterEntity>> {
-  FavouriteCharactersDataController(
-      {super.data = const [], required this.controller});
+  FavouriteCharactersDataController({
+    required this.getFavouriteCharactersUseCase,
+    required this.saveFavouriteCharactersUseCase,
+    required this.deleteFavouriteCharactersUseCase,
+    super.data = const [],
+    required this.controller,
+  });
 
+  final GetFavouriteCharactersUseCase getFavouriteCharactersUseCase;
+  final SaveFavouriteCharactersUseCase saveFavouriteCharactersUseCase;
+  final DeleteFavouriteCharactersUseCase deleteFavouriteCharactersUseCase;
   final CharactersDataController controller;
 
   @override
   Future<void> fetch() async {
     state = ConnectionState.waiting;
-    _data = [
-      CharacterEntity(
-        id: 0,
-        name: 'Morty 1',
-        specie: 'Human',
-        image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
-      ),
-    ];
+
+    try {
+      _data = await getFavouriteCharactersUseCase();
+      _updateFavouritedCharacters();
+    } catch (e) {
+      _error = e.toString();
+    }
     state = ConnectionState.done;
   }
 
   Future<void> addFavourite(CharacterEntity character) async {
     state = ConnectionState.active;
 
-    if (_data.contains(character)) {
-      _data.remove(character);
-    } else {
-      _data.add(character);
+    try {
+      if (_data.contains(character)) {
+        await deleteFavouriteCharactersUseCase(character.id);
+      } else {
+        await saveFavouriteCharactersUseCase(character);
+      }
+      _updateFavouritedCharacters();
+    } catch (e) {
+      _error = e.toString();
     }
-    controller.updateFavouritedCharacters(data.map((e) => e.id).toList());
     state = ConnectionState.done;
+  }
+
+  void _updateFavouritedCharacters() {
+    controller.updateFavouritedCharacters(data.map((e) => e.id).toList());
   }
 }

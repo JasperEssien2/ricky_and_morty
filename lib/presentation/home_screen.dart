@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ricky_and_morty/injector_container.dart';
 
 import 'package:ricky_and_morty/presentation/data_controllers.dart';
 import 'package:ricky_and_morty/presentation/widgets/item_character_card.dart';
@@ -11,9 +12,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final charactersController = CharactersDataController();
-  late final favouriteCharactersController =
-      FavouriteCharactersDataController(controller: charactersController);
+  final charactersController = CharactersDataController(
+    getCharactersUseCase: locator.get(),
+  );
+
+  late final favouriteCharactersController = FavouriteCharactersDataController(
+    controller: charactersController,
+    saveFavouriteCharactersUseCase: locator.get(),
+    deleteFavouriteCharactersUseCase: locator.get(),
+    getFavouriteCharactersUseCase: locator.get(),
+  );
 
   @override
   void initState() {
