@@ -2,33 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:ricky_and_morty/domain/character_entity.dart';
 
 class ItemCharacterCard extends StatelessWidget {
-  const ItemCharacterCard({super.key, required this.entity});
+  const ItemCharacterCard({
+    super.key,
+    required this.entity,
+    required this.onTap,
+  });
 
   final CharacterEntity entity;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
 
     return Container(
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-          offset: Offset(-2, -2),
-          blurRadius: 5,
-          spreadRadius: 5,
-        )
-      ]),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            offset: const Offset(2, 2),
+            blurRadius: 10,
+            spreadRadius: 10,
+            color: Colors.grey[100]!,
+          )
+        ],
+      ),
       child: ListTile(
-        leading: Container(
-          height: 140,
-          width: 140,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(entity.image),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
+        tileColor: Colors.white,
+        leading: _ImageWidget(entity: entity),
         title: Text(
           entity.name,
           style: theme.bodyLarge,
@@ -37,8 +40,86 @@ class ItemCharacterCard extends StatelessWidget {
           entity.specie,
           style: theme.bodySmall,
         ),
-        trailing: Icon(
-            entity.gender.toLowerCase() == 'male' ? Icons.male : Icons.female),
+        trailing: GestureDetector(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.favorite,
+              color: entity.isFavourited ? Colors.red : Colors.grey[200],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ItemFavouriteCharacter extends StatelessWidget {
+  const ItemFavouriteCharacter({super.key, required this.entity});
+
+  final CharacterEntity entity;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _ImageWidget(
+            entity: entity,
+            size: const Size(130, 100),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(entity.name, style: textTheme.bodyLarge),
+                Text(
+                  entity.specie,
+                  style: textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _ImageWidget extends StatelessWidget {
+  const _ImageWidget({
+    required this.entity,
+    // ignore: unused_element
+    this.size,
+  });
+
+  final CharacterEntity entity;
+  final Size? size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: size?.height ?? 60,
+      width: size?.width ?? 60,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        image: DecorationImage(
+          image: NetworkImage(entity.image),
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
