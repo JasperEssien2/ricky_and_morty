@@ -5,5 +5,5 @@ abstract class Repository {
 
   Future<bool> deleteFavourite(int id);
 
-  Future<bool> addFavourite(int id);
+  Future<bool> addFavourite(CharacterEntity character);
 }
