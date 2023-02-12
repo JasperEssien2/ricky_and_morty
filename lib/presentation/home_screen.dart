@@ -12,10 +12,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final charactersController = CharactersDataController();
+  late final favouriteCharactersController =
+      FavouriteCharactersDataController(controller: charactersController);
 
   @override
   void initState() {
-    charactersController.fetchCharacters();
+    charactersController.fetch();
+    favouriteCharactersController.fetch();
     super.initState();
   }
 
@@ -34,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
               } else if (charactersController.hasError) {
                 return Center(
                   child: Text(
-                    charactersController.error?.message ?? 'An error occurred!',
+                    charactersController.error ?? 'An error occurred!',
                   ),
                 );
               }
@@ -44,14 +47,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     flex: 2,
                     child: ListView.builder(
-                      itemCount: charactersController.characters.length,
+                      itemCount: charactersController.data.length,
                       itemBuilder: (context, index) {
-                        final entity = charactersController.characters[index];
+                        final entity = charactersController.data[index];
 
                         return ItemCharacterCard(
                           entity: entity,
-                          onTap: () =>
-                              charactersController.updateFavourite(entity.id),
+                          onTap: () => favouriteCharactersController
+                              .addFavourite(entity),
                         );
                       },
                     ),
@@ -71,12 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           Flexible(
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: charactersController
-                                  .favouriteCharacters.length,
+                              itemCount:
+                                  favouriteCharactersController.data.length,
                               itemBuilder: (context, index) =>
                                   ItemFavouriteCharacterCard(
-                                entity: charactersController
-                                    .favouriteCharacters[index],
+                                entity:
+                                    favouriteCharactersController.data[index],
                               ),
                             ),
                           ),
@@ -94,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     charactersController.dispose();
-
+    favouriteCharactersController.dispose();
     super.dispose();
   }
 }
