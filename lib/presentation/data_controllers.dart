@@ -36,6 +36,8 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
     _data = [];
   }
 
+  List<int> _favouritedIds = [];
+
   @override
   Future<void> fetch() async {
     state = ConnectionState.waiting;
@@ -59,15 +61,19 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
         image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
       ),
     ];
-
+    updateFavouritedCharacters();
     state = ConnectionState.done;
   }
 
-  void updateFavouritedCharacters(List<int> characterIds) {
+  void updateFavouritedCharacters({List<int>? characterIds}) {
     state = ConnectionState.active;
 
+    if (characterIds != null) {
+      _favouritedIds = characterIds;
+    }
+
     _data = _data!
-        .map((e) => e.copyWith(isFavourited: characterIds.contains(e.id)))
+        .map((e) => e.copyWith(isFavourited: _favouritedIds.contains(e.id)))
         .toList();
 
     state = ConnectionState.done;
@@ -85,14 +91,7 @@ class FavouriteCharactersDataController
   @override
   Future<void> fetch() async {
     state = ConnectionState.waiting;
-    _data = [
-      CharacterEntity(
-        id: 0,
-        name: 'Morty 1',
-        specie: 'Human',
-        image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
-      ),
-    ];
+    _updateFavouriteList();
     state = ConnectionState.done;
   }
 
@@ -104,7 +103,13 @@ class FavouriteCharactersDataController
     } else {
       _data!.add(character);
     }
-    controller.updateFavouritedCharacters(data!.map((e) => e.id).toList());
+    _updateFavouriteList();
     state = ConnectionState.done;
+  }
+
+  void _updateFavouriteList() {
+    controller.updateFavouritedCharacters(
+      characterIds: data!.map((e) => e.id).toList(),
+    );
   }
 }
