@@ -3,7 +3,7 @@ import 'package:ricky_and_morty/domain/domain_export.dart';
 
 final locator = GetIt.instance;
 
-Future<void> init()  async{
+Future<void> init() async {
   locator.registerFactory<GetCharactersUseCase>(
     () => GetCharactersUseCase(repository: locator.get()),
   );
