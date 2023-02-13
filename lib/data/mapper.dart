@@ -8,7 +8,7 @@ abstract class Mapper<M, E> {
   E toEntity(M model);
 }
 
-class CharacterModelToEntityMapper
+class _CharacterModelToEntityMapper
     extends Mapper<CharacterModel, CharacterEntity> {
   @override
   CharacterModel fromEntity(CharacterEntity entity) => CharacterModel(
@@ -27,7 +27,7 @@ class CharacterModelToEntityMapper
       );
 }
 
-class StoredCharacterModelToEntityMapper
+class _StoredCharacterModelToEntityMapper
     extends Mapper<StoredCharacterModel, CharacterEntity> {
   @override
   StoredCharacterModel fromEntity(CharacterEntity entity) =>
@@ -44,4 +44,22 @@ class StoredCharacterModelToEntityMapper
         specie: model.species!,
         image: model.image!,
       );
+}
+
+extension CharacterModelExt on CharacterModel {
+  CharacterEntity get toEntity =>
+      _CharacterModelToEntityMapper().toEntity(this);
+}
+
+extension StoredCharacterModelExt on StoredCharacterModel {
+  CharacterEntity get toEntity =>
+      _StoredCharacterModelToEntityMapper().toEntity(this);
+}
+
+extension CharacterEntityExt on CharacterEntity {
+  CharacterModel get toCharacterModel =>
+      _CharacterModelToEntityMapper().fromEntity(this);
+
+  StoredCharacterModel get toStoredCharacterModel =>
+      _StoredCharacterModelToEntityMapper().fromEntity(this);
 }
