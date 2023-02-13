@@ -13,19 +13,22 @@ abstract class LocalDataSource {
 }
 
 class HiveDataSource extends LocalDataSource {
-  Future<Box<CharacterModel>> get openHiveBox async {
+  Future<Box<String>> get openHiveBox async {
     const String boxName = 'favourites';
 
     if (!Hive.isBoxOpen(boxName)) {
       Hive.init((await getApplicationDocumentsDirectory()).path);
     }
 
-    return await Hive.openBox<CharacterModel>(boxName);
+    return await Hive.openBox<String>(boxName);
   }
 
   @override
   Future<List<CharacterModel>> getFavouriteCharacters() async =>
-      (await openHiveBox).values.toList();
+      (await openHiveBox)
+          .values
+          .map((e) => CharacterModel.fromJson(e))
+          .toList();
 
   @override
   Future<bool> deleteFavouriteCharacter(int characterId) async {
@@ -36,7 +39,7 @@ class HiveDataSource extends LocalDataSource {
 
   @override
   Future<bool> saveFavouriteCharacter(CharacterModel character) async {
-    await (await openHiveBox).put(character.id, character);
+    await (await openHiveBox).put(character.id, character.toJson());
 
     return true;
   }
