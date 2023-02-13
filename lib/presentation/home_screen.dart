@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
               flex: 2,
               child: Consumer(
                 dataController: charactersController,
-                child: ListView.builder(
+                childBuilder: (_) => ListView.builder(
                   itemCount: charactersController.data!.length,
                   itemBuilder: (context, index) {
                     final entity = charactersController.data![index];
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Flexible(
               child: Consumer(
                 dataController: favouriteCharactersController,
-                child: Container(
+                childBuilder: (_) => Container(
                   margin:
                       const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                   child: Column(
@@ -106,11 +106,11 @@ class Consumer extends StatelessWidget {
   const Consumer({
     super.key,
     required this.dataController,
-    required this.child,
+    required this.childBuilder,
   });
 
   final DataController<List<CharacterEntity>> dataController;
-  final Widget child;
+  final Widget Function(BuildContext context) childBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +131,7 @@ class Consumer extends StatelessWidget {
           );
         }
 
-        return child;
+        return childBuilder(context);
       },
     );
   }
