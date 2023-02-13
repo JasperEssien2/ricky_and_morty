@@ -71,7 +71,11 @@ class CharacterModel {
 
   factory CharacterModel.fromMap(Map<String, dynamic> map) {
     return CharacterModel(
-      id: map['id'] != null ? map['id'] as int : null,
+      id: map['id'] != null
+          ? map['id'] is String
+              ? int.tryParse(map['id'])
+              : map['id'] as int
+          : null,
       name: map['name'] != null ? map['name'] as String : null,
       status: map['status'] != null ? map['status'] as String : null,
       species: map['species'] != null ? map['species'] as String : null,

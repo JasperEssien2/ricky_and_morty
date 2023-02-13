@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:graphql/client.dart';
 import 'package:ricky_and_morty/data/models/character_model.dart';
 
 abstract class RemoteDataSource {
@@ -23,6 +24,46 @@ class DioDataSource extends RemoteDataSource {
       } else {
         throw Exception('An error occurred');
       }
+    }
+  }
+}
+
+class GraphQLDataSource extends RemoteDataSource {
+  final _httpLink = HttpLink(
+    'https://rickandmortyapi.com/graphql',
+  );
+
+  late final GraphQLClient client = GraphQLClient(
+    cache: GraphQLCache(),
+    link: _httpLink,
+  );
+
+  final query = '''
+          query {
+            characters{
+              results{
+                id
+                name
+                species
+                image
+                gender
+              }    
+            }
+          }
+          ''';
+
+  @override
+  Future<List<CharacterModel>> getCharacters() async {
+    final response = await client.query(
+      QueryOptions(document: gql(query)),
+    );
+
+    if (response.hasException) {
+      throw Exception(response.exception);
+    } else {
+      return (response.data!['characters']['results'] as List)
+          .map((e) => CharacterModel.fromMap(e))
+          .toList();
     }
   }
 }
