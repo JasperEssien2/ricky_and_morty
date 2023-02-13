@@ -32,7 +32,7 @@ abstract class DataController<T> with ChangeNotifier {
 }
 
 class CharactersDataController extends DataController<List<CharacterEntity>> {
-  CharactersDataController({ required this.getCharactersUseCase}) {
+  CharactersDataController({required this.getCharactersUseCase}) {
     _data = [];
   }
 
@@ -44,16 +44,20 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
 
     try {
       _data = await getCharactersUseCase();
+      // await Future.delayed(Duration(seconds: 140));
+
+      print('DATA ================== $_data');
     } catch (e) {
       _error = e.toString();
     }
+    notifyListeners();
     state = ConnectionState.done;
   }
 
   void updateFavouritedCharacters(List<int> characterIds) {
     state = ConnectionState.active;
 
-    _data = _data!
+    _data = data!
         .map((e) => e.copyWith(isFavourited: characterIds.contains(e.id)))
         .toList();
 
@@ -63,9 +67,12 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
 
 class FavouriteCharactersDataController
     extends DataController<List<CharacterEntity>> {
-  FavouriteCharactersDataController({required this.controller,  required this.getFavouriteCharactersUseCase,
-                                                                  required this.saveFavouriteCharactersUseCase,
-                                                                  required this.deleteFavouriteCharactersUseCase,}) {
+  FavouriteCharactersDataController({
+    required this.controller,
+    required this.getFavouriteCharactersUseCase,
+    required this.saveFavouriteCharactersUseCase,
+    required this.deleteFavouriteCharactersUseCase,
+  }) {
     _data = [];
   }
 
@@ -100,11 +107,11 @@ class FavouriteCharactersDataController
     } catch (e) {
       _error = e.toString();
     }
-    controller.updateFavouritedCharacters(data.map((e) => e.id).toList());
+    controller.updateFavouritedCharacters(data!.map((e) => e.id).toList());
     state = ConnectionState.done;
   }
 
   void _updateFavouritedCharacters() {
-    controller.updateFavouritedCharacters(data.map((e) => e.id).toList());
+    controller.updateFavouritedCharacters(data!.map((e) => e.id).toList());
   }
 }
