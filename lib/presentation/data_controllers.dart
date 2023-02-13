@@ -44,9 +44,7 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
 
     try {
       _data = await getCharactersUseCase();
-      // await Future.delayed(Duration(seconds: 140));
 
-      print('DATA ================== $_data');
     } catch (e) {
       _error = e.toString();
     }

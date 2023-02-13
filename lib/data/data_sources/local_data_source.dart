@@ -2,29 +2,29 @@ import 'dart:async';
 
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ricky_and_morty/data/models/stored_character_model.dart';
+import 'package:ricky_and_morty/data/models/character_model.dart';
 
 abstract class LocalDataSource {
-  Future<List<StoredCharacterModel>> getFavouriteCharacters();
+  Future<List<CharacterModel>> getFavouriteCharacters();
 
-  Future<bool> saveFavouriteCharacter(StoredCharacterModel character);
+  Future<bool> saveFavouriteCharacter(CharacterModel character);
 
   Future<bool> deleteFavouriteCharacter(int characterId);
 }
 
 class HiveDataSource extends LocalDataSource {
-  Future<Box<StoredCharacterModel>> get openHiveBox async {
+  Future<Box<CharacterModel>> get openHiveBox async {
     const String boxName = 'favourites';
 
     if (!Hive.isBoxOpen(boxName)) {
       Hive.init((await getApplicationDocumentsDirectory()).path);
     }
 
-    return await Hive.openBox<StoredCharacterModel>(boxName);
+    return await Hive.openBox<CharacterModel>(boxName);
   }
 
   @override
-  Future<List<StoredCharacterModel>> getFavouriteCharacters() async =>
+  Future<List<CharacterModel>> getFavouriteCharacters() async =>
       (await openHiveBox).values.toList();
 
   @override
@@ -35,7 +35,7 @@ class HiveDataSource extends LocalDataSource {
   }
 
   @override
-  Future<bool> saveFavouriteCharacter(StoredCharacterModel character) async {
+  Future<bool> saveFavouriteCharacter(CharacterModel character) async {
     await (await openHiveBox).put(character.id, character);
 
     return true;

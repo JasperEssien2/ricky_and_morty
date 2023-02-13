@@ -15,7 +15,7 @@ class RepositoryImpl extends Repository {
   @override
   Future<bool> addFavourite(CharacterEntity character) async {
     return localDataSource
-        .saveFavouriteCharacter(character.toStoredCharacterModel);
+        .saveFavouriteCharacter(character.toCharacterModel);
   }
 
   @override
