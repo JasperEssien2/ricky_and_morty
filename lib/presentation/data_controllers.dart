@@ -46,7 +46,6 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
 
     try {
       _data = await getCharactersUseCase();
-
     } catch (e) {
       _error = e.toString();
     }
@@ -91,7 +90,6 @@ class FavouriteCharactersDataController
 
     try {
       _data = await getFavouriteCharactersUseCase();
-      _updateFavouritedCharacters();
     } catch (e) {
       _error = e.toString();
     }
@@ -108,11 +106,11 @@ class FavouriteCharactersDataController
       } else {
         await saveFavouriteCharactersUseCase(character);
       }
-      _updateFavouritedCharacters();
     } catch (e) {
       _error = e.toString();
     }
-    _updateFavouriteList();
+
+    fetch();
     state = ConnectionState.done;
   }
 

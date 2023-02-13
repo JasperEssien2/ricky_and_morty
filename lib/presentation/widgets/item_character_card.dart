@@ -67,33 +67,39 @@ class ItemFavouriteCharacterCard extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _ImageWidget(
-            entity: entity,
-            size: const Size(130, 100),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(entity.name, style: textTheme.bodyLarge),
-                Text(
-                  entity.specie,
-                  style: textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+      child: SizedBox(
+        width: 130,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ImageWidget(
+              entity: entity,
+              size: const Size(130, 100),
             ),
-          )
-        ],
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                        child: Text(entity.name, style: textTheme.bodyLarge)),
+                    Text(
+                      entity.specie,
+                      style: textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
