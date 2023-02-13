@@ -1,33 +1,42 @@
 import 'dart:async';
 
 import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:ricky_and_morty/data/models/stored_character_model.dart';
 
 abstract class LocalDataSource {
-  FutureOr<List<StoredCharacterModel>> getFavouriteCharacters();
+  Future<List<StoredCharacterModel>> getFavouriteCharacters();
 
-  FutureOr<bool> saveFavouriteCharacter(StoredCharacterModel character);
+  Future<bool> saveFavouriteCharacter(StoredCharacterModel character);
 
-  FutureOr<bool> deleteFavouriteCharacter(int characterId);
+  Future<bool> deleteFavouriteCharacter(int characterId);
 }
 
 class HiveDataSource extends LocalDataSource {
-  final box = Hive.box<StoredCharacterModel>('favourites');
+  Future<Box<StoredCharacterModel>> get openHiveBox async {
+    const String boxName = 'favourites';
+
+    if (!Hive.isBoxOpen(boxName)) {
+      Hive.init((await getApplicationDocumentsDirectory()).path);
+    }
+
+    return await Hive.openBox<StoredCharacterModel>(boxName);
+  }
 
   @override
-  FutureOr<List<StoredCharacterModel>> getFavouriteCharacters() =>
-      box.values.toList();
+  Future<List<StoredCharacterModel>> getFavouriteCharacters() async =>
+      (await openHiveBox).values.toList();
 
   @override
-  FutureOr<bool> deleteFavouriteCharacter(int characterId) async {
-    await box.delete(characterId);
+  Future<bool> deleteFavouriteCharacter(int characterId) async {
+    await (await openHiveBox).delete(characterId);
 
     return true;
   }
 
   @override
-  FutureOr<bool> saveFavouriteCharacter(StoredCharacterModel character) async {
-    await box.put(character.id, character);
+  Future<bool> saveFavouriteCharacter(StoredCharacterModel character) async {
+    await (await openHiveBox).put(character.id, character);
 
     return true;
   }

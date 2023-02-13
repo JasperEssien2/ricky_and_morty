@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:ricky_and_morty/injector_container.dart';
 import 'package:ricky_and_morty/presentation/home_screen.dart';
 
 void main() {
+  init();
   runApp(const MyApp());
 }
 
