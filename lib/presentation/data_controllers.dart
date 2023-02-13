@@ -38,6 +38,8 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
 
   final GetCharactersUseCase getCharactersUseCase;
 
+  List<int> _favouritedIds = [];
+
   @override
   Future<void> fetch() async {
     state = ConnectionState.waiting;
@@ -48,15 +50,19 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
     } catch (e) {
       _error = e.toString();
     }
-    notifyListeners();
+    updateFavouritedCharacters();
     state = ConnectionState.done;
   }
 
-  void updateFavouritedCharacters(List<int> characterIds) {
+  void updateFavouritedCharacters({List<int>? characterIds}) {
     state = ConnectionState.active;
 
+    if (characterIds != null) {
+      _favouritedIds = characterIds;
+    }
+
     _data = data!
-        .map((e) => e.copyWith(isFavourited: characterIds.contains(e.id)))
+        .map((e) => e.copyWith(isFavourited: _favouritedIds.contains(e.id)))
         .toList();
 
     state = ConnectionState.done;
@@ -89,6 +95,7 @@ class FavouriteCharactersDataController
     } catch (e) {
       _error = e.toString();
     }
+    _updateFavouriteList();
     state = ConnectionState.done;
   }
 
@@ -105,11 +112,13 @@ class FavouriteCharactersDataController
     } catch (e) {
       _error = e.toString();
     }
-    controller.updateFavouritedCharacters(data!.map((e) => e.id).toList());
+    _updateFavouriteList();
     state = ConnectionState.done;
   }
 
-  void _updateFavouritedCharacters() {
-    controller.updateFavouritedCharacters(data!.map((e) => e.id).toList());
+  void _updateFavouriteList() {
+    controller.updateFavouritedCharacters(
+      characterIds: data!.map((e) => e.id).toList(),
+    );
   }
 }
