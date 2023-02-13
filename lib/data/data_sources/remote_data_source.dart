@@ -15,7 +15,7 @@ class DioDataSource extends RemoteDataSource {
           await dio.get('https://rickandmortyapi.com/api/character');
 
       return (response.data['results'] as List)
-          .map((e) => CharacterModel.fromJson(e))
+          .map((e) => CharacterModel.fromMap(e))
           .toList();
     } on DioError catch (e) {
       if (e.response != null) {

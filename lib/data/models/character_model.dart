@@ -79,9 +79,8 @@ class CharacterModel {
       gender: map['gender'] != null ? map['gender'] as String : null,
       image: map['image'] != null ? map['image'] as String : null,
       url: map['url'] != null ? map['url'] as String : null,
-      created: map['created'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['created'] as int)
-          : null,
+      created:
+          map['created'] != null ? DateTime.tryParse(map['created']) : null,
     );
   }
 
