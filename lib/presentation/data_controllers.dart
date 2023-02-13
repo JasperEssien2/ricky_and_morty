@@ -4,10 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:ricky_and_morty/domain/domain_export.dart';
 
 abstract class DataController<T> with ChangeNotifier {
-  DataController({required T data}) : _data = data;
+  DataController({T? data}) : _data = data;
 
-  T get data => _data;
-  T _data;
+  T? get data => _data;
+  T? _data;
 
   String? get error => _error;
   String? _error;
@@ -32,10 +32,9 @@ abstract class DataController<T> with ChangeNotifier {
 }
 
 class CharactersDataController extends DataController<List<CharacterEntity>> {
-  CharactersDataController({
-    super.data = const [],
-    required this.getCharactersUseCase,
-  });
+  CharactersDataController({ required this.getCharactersUseCase}) {
+    _data = [];
+  }
 
   final GetCharactersUseCase getCharactersUseCase;
 
@@ -54,7 +53,7 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
   void updateFavouritedCharacters(List<int> characterIds) {
     state = ConnectionState.active;
 
-    _data = data
+    _data = _data!
         .map((e) => e.copyWith(isFavourited: characterIds.contains(e.id)))
         .toList();
 
@@ -64,13 +63,11 @@ class CharactersDataController extends DataController<List<CharacterEntity>> {
 
 class FavouriteCharactersDataController
     extends DataController<List<CharacterEntity>> {
-  FavouriteCharactersDataController({
-    required this.getFavouriteCharactersUseCase,
-    required this.saveFavouriteCharactersUseCase,
-    required this.deleteFavouriteCharactersUseCase,
-    super.data = const [],
-    required this.controller,
-  });
+  FavouriteCharactersDataController({required this.controller,  required this.getFavouriteCharactersUseCase,
+                                                                  required this.saveFavouriteCharactersUseCase,
+                                                                  required this.deleteFavouriteCharactersUseCase,}) {
+    _data = [];
+  }
 
   final GetFavouriteCharactersUseCase getFavouriteCharactersUseCase;
   final SaveFavouriteCharactersUseCase saveFavouriteCharactersUseCase;
@@ -94,7 +91,7 @@ class FavouriteCharactersDataController
     state = ConnectionState.active;
 
     try {
-      if (_data.contains(character)) {
+      if (_data!.contains(character)) {
         await deleteFavouriteCharactersUseCase(character.id);
       } else {
         await saveFavouriteCharactersUseCase(character);
@@ -103,6 +100,7 @@ class FavouriteCharactersDataController
     } catch (e) {
       _error = e.toString();
     }
+    controller.updateFavouritedCharacters(data.map((e) => e.id).toList());
     state = ConnectionState.done;
   }
 

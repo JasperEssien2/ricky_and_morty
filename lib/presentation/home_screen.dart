@@ -46,9 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Consumer(
                 dataController: charactersController,
                 child: ListView.builder(
-                  itemCount: charactersController.data.length,
+                  itemCount: charactersController.data!.length,
                   itemBuilder: (context, index) {
-                    final entity = charactersController.data[index];
+                    final entity = charactersController.data![index];
 
                     return ItemCharacterCard(
                       entity: entity,
@@ -70,16 +70,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Favourites (${favouriteCharactersController.data.length})',
+                        'Favourites (${favouriteCharactersController.data!.length})',
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       Flexible(
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: favouriteCharactersController.data.length,
+                          itemCount: favouriteCharactersController.data!.length,
                           itemBuilder: (context, index) =>
                               ItemFavouriteCharacterCard(
-                            entity: favouriteCharactersController.data[index],
+                            entity: favouriteCharactersController.data![index],
                           ),
                         ),
                       ),
@@ -125,7 +125,7 @@ class Consumer extends StatelessWidget {
               dataController.error ?? 'An error occurred!',
             ),
           );
-        } else if (dataController.data.isEmpty) {
+        } else if (dataController.data!.isEmpty) {
           return const Center(
             child: Text('No data to display'),
           );
