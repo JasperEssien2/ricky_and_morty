@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:graphql/client.dart';
-import 'package:ricky_and_morty/data/models/character_model.dart';
+import 'package:ricky_and_morty/data/character_model.dart';
 
 abstract class RemoteDataSource {
   Future<List<CharacterModel>> getCharacters();

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ricky_and_morty/data/models/character_model.dart';
+import 'package:ricky_and_morty/data/character_model.dart';
 
 abstract class LocalDataSource {
   Future<List<CharacterModel>> getFavouriteCharacters();

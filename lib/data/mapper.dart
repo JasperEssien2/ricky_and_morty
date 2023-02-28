@@ -1,4 +1,4 @@
-import 'package:ricky_and_morty/data/models/character_model.dart';
+import 'package:ricky_and_morty/data/character_model.dart';
 import 'package:ricky_and_morty/domain/domain_export.dart';
 
 abstract class Mapper<M, E> {
